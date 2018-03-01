@@ -45,12 +45,13 @@ void moveX(int i);
 void moveY(int i);
 void initial();
 int timeUsed(int i,Ride r,int cur_time);
+void printAll();
 
 int main() {
     Parser();
     places=new Point[F];
     used=new bool[F];
-    mergeSort(rides,0,N);
+    mergeSort(rides,0,N-1);
     moveTo=new Point[F];
     chosen=new Ride[N];
     chosenRides=new std::list<int>[F];
@@ -80,28 +81,32 @@ int main() {
             else{
                 Ride best=rides[0];
                 bool not_in=true;
-                int z;
-                for(z=0;z<N;z++){
+                int l;
+                for(int z=0;z<N;z++){
                     if(!rides[z].used){
                         if(not_in){
                             best=rides[z];
+                            l=z;
                             not_in=false;
                         }
                         else{
                             if(timeUsed(j,best,i)>timeUsed(j,rides[z],i)){
                                 best=rides[z];
+                                l=z;
                             }
                         }
                     }
                 }
                 if(!not_in){
-                    rides[z].used=true;
-                    chosenRides[j].push_back(rides[z].id);
+                    rides[l].used=true;
+                    chosenRides[j].push_back(rides[l].id);
                     used[j]=true;
                 }
             }
         }
+
     }
+    printAll();
     return 0;
 }
 
@@ -262,8 +267,21 @@ void Parser() {
 
 void initial() {
     for(int i=0;i<F;i++) {
+        rides[i].used=true;
         chosen[i]=rides[i];
         chosenRides[i].push_back(rides[i].id);
-        rides[i].used=true;
+    }
+}
+
+void printAll() {
+    int j=0;
+    for(int i=0;i<F;i++) {
+        std::cout << chosenRides[i].size();
+        for (std::list<int>::iterator itr = chosenRides[i].begin();
+             itr != chosenRides[i].end(); itr++) {
+            std::cout << " ";
+            std::cout << (*itr);
+        }
+        std::cout << std::endl;
     }
 }
