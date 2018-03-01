@@ -42,6 +42,7 @@ int distance(Point p1,Point p2);
 void Parser();
 void moveX(int i);
 void moveY(int i);
+void initial();
 
 int main() {
     Parser();
@@ -50,6 +51,7 @@ int main() {
     mergeSort(rides,0,N);
     moveTo=new Point[F];
     chosen=new Ride[N];
+    initial();
     for(int i=0;i<T;i++){
         for(int j=0;j<F;j++){
             if(used[j]==true){
