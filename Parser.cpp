@@ -4,7 +4,7 @@
 #include <cstdlib>
 
 
-int compare(Ride r1,Ride r2,Point p);
+
 
 class Point{
 public:
@@ -28,7 +28,8 @@ Point* places;
 bool* used;
 Ride* rides;
 
-
+void mergeSort(Ride* init, int l, int r);
+int compare(Ride r1,Ride r2,Point p);
 int closest(Point p);
 int distance(Point p1,Point p2);
 void Parser();
@@ -37,8 +38,7 @@ int main() {
     Parser();
     places=new Point[F];
     used=new bool[F];
-    Ride* init = new Ride[F];
-    initial(init);
+    mergeSort(rides,0,N);
     return 0;
 }
 
@@ -124,13 +124,6 @@ void mergeSort(Ride* init, int l, int r)
 
         merge(init, l, m, r);
     }
-}
-
-void initial(Ride* init) {
-
-
-
-
 }
 
 bool outOfRange(Ride r){
