@@ -2,9 +2,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <cstdlib>
-
-
-
+#include <list>
 
 class Point{
 public:
@@ -27,6 +25,7 @@ public:
     Point startP;
     Point endP;
     int id;
+    bool used;
 };
 
 int R=0,C=0,F=0,N=0,B=0,T=0,lastUsed;
@@ -35,6 +34,7 @@ bool* used;
 Ride* rides;
 Point* moveTo;
 Ride* chosen;
+std::list<int>* chosenRides;
 
 void mergeSort(Ride* init, int l, int r);
 int compare(Ride r1,Ride r2,Point p);
@@ -44,6 +44,7 @@ void Parser();
 void moveX(int i);
 void moveY(int i);
 void initial();
+int timeUsed(int i,Ride r,int cur_time);
 
 int main() {
     Parser();
@@ -52,10 +53,11 @@ int main() {
     mergeSort(rides,0,N);
     moveTo=new Point[F];
     chosen=new Ride[N];
+    chosenRides=new std::list<int>[F];
     initial();
     for(int i=0;i<T;i++){
         for(int j=0;j<F;j++){
-            if(used[j]==true){
+            if(used[j]){
                 if(moveTo[j]!=places[j]){
                     if(moveTo[j].x==places[j].x){
                         moveY(j);
@@ -76,11 +78,43 @@ int main() {
                 }
             }
             else{
-
+                Ride best=rides[0];
+                bool not_in=true;
+                int z;
+                for(z=0;z<N;z++){
+                    if(!rides[z].used){
+                        if(not_in){
+                            best=rides[z];
+                            not_in=false;
+                        }
+                        else{
+                            if(timeUsed(j,best,i)>timeUsed(j,rides[z],i)){
+                                best=rides[z];
+                            }
+                        }
+                    }
+                }
+                if(!not_in){
+                    rides[z].used=true;
+                    chosenRides[j].push_back(rides[z].id);
+                    used[j]=true;
+                }
             }
         }
     }
     return 0;
+}
+
+int waitTime(int i,Ride r,int cur_time){
+    int getThere=cur_time+distance(places[i],r.startP);
+    if(getThere>=r.startT){
+        return 0;
+    }
+    return r.startT-getThere;
+}
+
+int timeUsed(int i,Ride r,int cur_time){
+    return distance(places[i],r.startP)+waitTime(i,r,cur_time)+distance(r.startP,r.endP);
 }
 
 void moveY(int i){
@@ -218,6 +252,7 @@ void Parser() {
         std::cin >> rides[place].startT;
         std::cin >> rides[place].endT;
         rides[place].id=place;
+        rides[place].used=false;
         if(outOfRange(rides[place])){
             place--;
         }
@@ -228,6 +263,7 @@ void Parser() {
 void initial() {
     for(int i=0;i<F;i++) {
         chosen[i]=rides[i];
+        chosenRides[i].push_back(rides[i].id);
+        rides[i].used=true;
     }
-    lastUsed=F;
 }
