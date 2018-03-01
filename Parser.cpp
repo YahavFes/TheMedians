@@ -20,26 +20,62 @@ public:
     int endT;
     Point startP;
     Point endP;
-
 };
 
 int R=0,C=0,F=0,N=0,B=0,T=0;
 Point* places;
 bool* used;
 Ride* rides;
+Point* moveTo;
 
 void mergeSort(Ride* init, int l, int r);
 int compare(Ride r1,Ride r2,Point p);
 int closest(Point p);
 int distance(Point p1,Point p2);
 void Parser();
+void moveX(int i);
+void moveY(int i);
 
 int main() {
     Parser();
     places=new Point[F];
     used=new bool[F];
     mergeSort(rides,0,N);
+    moveTo=new Point[F];
+    for(int i=0;i<T;i++){
+        for(int j=0;j<F;j++){
+            if(used[j]){
+                if(moveTo[j].x==places[j].x){
+                    moveY(j);
+                }
+                else{
+                    moveX(j);
+                }
+            }
+            else{
+
+            }
+        }
+    }
     return 0;
+}
+
+void moveY(int i){
+    if(places[i].y<moveTo[i].y){
+        places[i].y++;
+    }
+    else{
+        places[i].y--;
+    }
+}
+
+void moveX(int i){
+    if(places[i].x<moveTo[i].x){
+        places[i].x++;
+    }
+    else{
+        places[i].x--;
+    }
 }
 
 int closest(Point p){
@@ -131,25 +167,12 @@ bool outOfRange(Ride r){
 }
 
 int compare(Ride r1,Ride r2,Point p){
-    if(r1.startT>r2.startT){
+    if(distance(r1.startP,p) + r1.startT < distance(r2.startP,p) + r2.startT) {
         return 1;
     }
-    else if(r1.startT==r2.startT){
-        if(distance(r1.startP,p)>distance(r2.startP,p)){
-            return 1;
-        }
-        else{
-            if(distance(r1.startP,p)==distance(r2.startP,p)){
-                if(distance(r1.startP,r1.endP)>distance(r2.startP,r2.endP)){
-                    return 1;
-                }
-                else{
-                    return 0;
-                }
-            }
-        }
+    else {
+        return 0;
     }
-    return 0;
 }
 
 void Parser() {
@@ -174,4 +197,8 @@ void Parser() {
         }
     }
     N=place;
+}
+
+void initial() {
+
 }
