@@ -12,6 +12,12 @@ public:
     int y;
     Point(): x(0),y(0){}
     Point(int a,int b):x(a),y(b){}
+    bool operator==(Point& p){
+        return x==p.x&&y==p.y;
+    }
+    bool operator!=(Point& p){
+        return !(*this==p);
+    }
 };
 
 class Ride {
@@ -27,6 +33,7 @@ Point* places;
 bool* used;
 Ride* rides;
 Point* moveTo;
+Ride* chosen;
 
 void mergeSort(Ride* init, int l, int r);
 int compare(Ride r1,Ride r2,Point p);
@@ -42,14 +49,27 @@ int main() {
     used=new bool[F];
     mergeSort(rides,0,N);
     moveTo=new Point[F];
+    chosen=new Ride[N];
     for(int i=0;i<T;i++){
         for(int j=0;j<F;j++){
-            if(used[j]){
-                if(moveTo[j].x==places[j].x){
-                    moveY(j);
+            if(used[j]==true){
+                if(moveTo[j]!=places[j]){
+                    if(moveTo[j].x==places[j].x){
+                        moveY(j);
+                    }
+                    else{
+                        moveX(j);
+                    }
                 }
-                else{
-                    moveX(j);
+                if(places[j]==moveTo[j]){
+                    if(chosen[j].endP==places[j]){
+                        used[j]=false;
+                    }
+                    else{
+                        if(i+1>=chosen[j].startT){
+                            moveTo[j]=chosen[j].endP;
+                        }
+                    }
                 }
             }
             else{
@@ -79,10 +99,12 @@ void moveX(int i){
 }
 
 int closest(Point p){
-    int min=0;
-    for(int i=1;i<F;i++){
-        if(distance(p,places[min])>distance(p,places[i])){
-            min=i;
+    int min=-1;
+    for(int i=0;i<F;i++){
+        if(!used[i]) {
+            if (min==-1||distance(p, places[min]) > distance(p, places[i])) {
+                min = i;
+            }
         }
     }
     return min;
@@ -200,5 +222,16 @@ void Parser() {
 }
 
 void initial() {
-
+    Point point(0,0);
+    int j=0;
+    for(int i=0;i<F;i++) {
+        if(distance(point,rides[i].startP) <= rides[i].startT) {
+            used[j]=1;
+            chosen[j]=rides[i];
+            j++;
+        }
+        else {
+            i--;
+        }
+    }
 }
