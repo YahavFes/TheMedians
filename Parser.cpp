@@ -28,6 +28,7 @@ Point* places;
 bool* used;
 Ride* rides;
 Point* moveTo;
+Ride* chosen;
 
 void mergeSort(Ride* init, int l, int r);
 int compare(Ride r1,Ride r2,Point p);
@@ -42,15 +43,28 @@ int main() {
     places=new Point[F];
     used=new bool[F];
     mergeSort(rides,0,N);
-	moveTo=new Point[F]
+	moveTo=new Point[F];
+	chosen=new Ride[N];
 	for(int i=0;i<T;i++){
 		for(int j=0;j<F;j++){
 			if(used[j]==true){
-				if(moveTo[j].x==places[j].x){
-					moveY(j);
+				if(moveTo[j]!=places[j]){
+					if(moveTo[j].x==places[j].x){
+						moveY(j);
+					}
+					else{
+						moveX(j);
+					}
 				}
-				else{
-					moveX(j);
+				if(places[j]==moveTo[j]){
+					if(chosen[j].endP==places[j]){
+						used[j]=false;
+					}
+					else{
+						if(i+1>=chosen[j].startT){
+							moveTo[j]=chosen[j].endP;
+						}
+					}
 				}
 			}
 			else{
