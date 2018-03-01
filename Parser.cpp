@@ -26,9 +26,10 @@ public:
     int endT;
     Point startP;
     Point endP;
+    int id;
 };
 
-int R=0,C=0,F=0,N=0,B=0,T=0;
+int R=0,C=0,F=0,N=0,B=0,T=0,lastUsed;
 Point* places;
 bool* used;
 Ride* rides;
@@ -216,6 +217,7 @@ void Parser() {
         std::cin >> rides[place].endP.y;
         std::cin >> rides[place].startT;
         std::cin >> rides[place].endT;
+        rides[place].id=place;
         if(outOfRange(rides[place])){
             place--;
         }
@@ -224,16 +226,8 @@ void Parser() {
 }
 
 void initial() {
-    Point point(0,0);
-    int j=0;
     for(int i=0;i<F;i++) {
-        if(distance(point,rides[i].startP) <= rides[i].startT) {
-            used[j]=1;
-            chosen[j]=rides[i];
-            j++;
-        }
-        else {
-            i--;
-        }
+        chosen[i]=rides[i];
     }
+    lastUsed=F;
 }
