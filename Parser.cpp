@@ -27,19 +27,56 @@ int R=0,C=0,F=0,N=0,B=0,T=0;
 Point* places;
 bool* used;
 Ride* rides;
+Point* moveTo;
 
 void mergeSort(Ride* init, int l, int r);
 int compare(Ride r1,Ride r2,Point p);
 int closest(Point p);
 int distance(Point p1,Point p2);
 void Parser();
+void moveX(int i);
+void moveY(int i);
 
 int main() {
     Parser();
     places=new Point[F];
     used=new bool[F];
     mergeSort(rides,0,N);
+	moveTo=new Point[F]
+	for(int i=0;i<T;i++){
+		for(int j=0;j<F;j++){
+			if(used[j]==true){
+				if(moveTo[j].x==places[j].x){
+					moveY(j);
+				}
+				else{
+					moveX(j);
+				}
+			}
+			else{
+				
+			}
+		}
+	}
     return 0;
+}
+
+void moveY(int i){
+	if(places[i].y<moveTo[i].y){
+		places[i].y++;
+	}
+	else{
+		places[i].y--;
+	}
+}
+
+void moveX(int i){
+	if(places[i].x<moveTo[i].x){
+		places[i].x++;
+	}
+	else{
+		places[i].x--;
+	}
 }
 
 int closest(Point p){
